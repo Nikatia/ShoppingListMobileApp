@@ -17,9 +17,8 @@
             <Picker x:Name="pickerCategory" Title="Select a category" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
 
             <Label x:Name="WhatCategory2" IsVisible="false" Text="{Binding SelectedCategory.CategoryId}"/>
-            <Picker x:Name="pickerProduct" IsVisible="false" Title="Select items" ItemDisplayBinding="{Binding ProductName}" SelectedItem="{Binding SelectedProduct}" />
-            <!--<ListView x:Name="productList"
-                      ItemTapped="productList_ItemTapped"
+            <!--<Picker x:Name="pickerProduct" IsVisible="false" Title="Select items" ItemDisplayBinding="{Binding ProductName}" SelectedItem="{Binding SelectedProduct}" /> -->
+            <ListView x:Name="productList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
                       HorizontalScrollBarVisibility="Never"
@@ -37,13 +36,38 @@
 
                                 <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
                                 <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                <Entry x:Name="Amount" Placeholder="Enter amount" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked}" VerticalOptions="Center" HorizontalOptions="EndAndExpand" Color="#bb86fc"/>
+                                <Entry x:Name="Amount" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="33" WidthRequest="33" Padding="0,0,0,0" FontSize="20" Grid.Column="3" Clicked="Button_Clicked"></Button>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>-->
+            </ListView>
+
+            <ListView x:Name="selectedList"
+                      SeparatorVisibility="None"
+                      VerticalScrollBarVisibility="Never"
+                      HorizontalScrollBarVisibility="Never"
+                      IsVisible="true">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                <Label x:Name="Amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <Button x:Name="AddItems" Clicked="AddItems_Clicked"  Text="Add selected items to the shopping list"></Button>
         </StackLayout>
