@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CarouselPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.MainPage"
+             Title="Shopping List">
+
+    <CarouselPage.Resources>
+        <StyleSheet Source="/Assets/Stylesheet.css" />
+    </CarouselPage.Resources>
+
+    <ContentPage StyleClass="dark">
+        <ScrollView>
+            <StackLayout>
+                <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
+                    <Label x:Name="UpperLabel" Text="Shopping List" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
+                </Frame>
+                <Button x:Name="AddItem" Clicked="AddItem_Clicked"  Text="Add new item to the list"></Button>
+
+                <ListView x:Name="shoppingList"
+                      ItemTapped="shoppingList_ItemTapped"
+                      SeparatorVisibility="None"
+                      VerticalScrollBarVisibility="Never"
+                      HorizontalScrollBarVisibility="Never">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                    <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                    <Label Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                    <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked}" VerticalOptions="Center" HorizontalOptions="EndAndExpand" Color="#bb86fc"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage>
+</CarouselPage>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.AddingItems"
+             Title="Shopping List">
+
+    <ContentPage.Resources>
+        <StyleSheet Source="/Assets/Stylesheet.css" />
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
+                <Label x:Name="UpperLabel" Text="Add Item" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
+            </Frame>
+
+            <Picker x:Name="pickerCategory" Title="Select a category" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
+
+            <Label x:Name="WhatCategory2" IsVisible="false" Text="{Binding SelectedCategory.CategoryId}"/>
+            <Picker x:Name="pickerProduct" IsVisible="false" Title="Select items" ItemDisplayBinding="{Binding ProductName}" SelectedItem="{Binding SelectedProduct}" />
+            <!--<ListView x:Name="productList"
+                      ItemTapped="productList_ItemTapped"
+                      SeparatorVisibility="None"
+                      VerticalScrollBarVisibility="Never"
+                      HorizontalScrollBarVisibility="Never"
+                      IsVisible="false">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                <Entry x:Name="Amount" Placeholder="Enter amount" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked}" VerticalOptions="Center" HorizontalOptions="EndAndExpand" Color="#bb86fc"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
+
+            <Button x:Name="AddItems" Clicked="AddItems_Clicked"  Text="Add selected items to the shopping list"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
