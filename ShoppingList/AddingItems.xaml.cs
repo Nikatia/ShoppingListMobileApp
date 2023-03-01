@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ShoppingList.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +24,7 @@ namespace ShoppingList
         {
             InitializeComponent();
             BindingContext = new AddingItemsViewModel();
-            
+
         }
 
         private HttpClientHandler GetInsecureHandler()
@@ -75,12 +78,12 @@ namespace ShoppingList
             List<Category> CategoriesList = new List<Category>();
 
 
-            #if DEBUG
+#if DEBUG
             HttpClientHandler insecureHandler = GetInsecureHandler();
             HttpClient client = new HttpClient(insecureHandler);
-            #else
+#else
                         HttpClient client = new HttpClient();
-            #endif
+#endif
 
             client.BaseAddress = new Uri("https://10.0.2.2:7103/");
             string json = await client.GetStringAsync("api/category");
@@ -94,12 +97,12 @@ namespace ShoppingList
             try
             {
 
-                #if DEBUG
+#if DEBUG
                 HttpClientHandler insecureHandler = GetInsecureHandler();
                 HttpClient client = new HttpClient(insecureHandler);
-                #else
+#else
                         HttpClient client = new HttpClient();
-                #endif
+#endif
 
                 client.BaseAddress = new Uri("https://10.0.2.2:7103/");
                 string json = await client.GetStringAsync("api/products/" + catId);
@@ -129,14 +132,31 @@ namespace ShoppingList
             var btn = (Button)sender;
             var item = (ListedItem)btn.BindingContext;
             bool exists = false;
-            
-            if (item.Amount == 0 )
+
+            if (item.Amount == 0)
             {
-                DisplayAlert("Invalid Amount", "You cannot add 0 amount of an item to the shopping list", "Ok");
+                foreach (var i in selectedProductList)
+                {
+                    if (i.ProductId == item.ProductId)
+                    {
+                        exists = true;
+                        selectedProductList.Remove(i);
+                        break;
+                    }
+                }
+                if (exists == true)
+                {
+                    selectedList.ItemsSource = null;
+                    selectedList.ItemsSource = selectedProductList;
+                }
+                else
+                {
+                    DisplayAlert("Invalid Amount", "You cannot add 0 amount of an item to the shopping list", "Ok");
+                }
             }
             else
             {
-                foreach(var i in selectedProductList)
+                foreach (var i in selectedProductList)
                 {
                     if (i.ProductId == item.ProductId)
                     {
@@ -155,12 +175,55 @@ namespace ShoppingList
                     selectedList.ItemsSource = null;
                     selectedList.ItemsSource = selectedProductList;
                 }
-            }   
+            }
         }
 
-        private void AddItems_Clicked(object sender, EventArgs e)
+        private async void AddItems_Clicked(object sender, EventArgs e)
         {
+            bool success = false;
+            try
+            {
+                foreach (var i in selectedProductList)
+                {
+                    int product = i.ProductId;
+                    int amount = i.Amount;
+                    ListedItem item = new ListedItem() { ProductId = product, Amount = amount };
+                    var content = JsonConvert.SerializeObject(item);
 
+                    HttpClientHandler insecureHandler = GetInsecureHandler();
+                    HttpClient client = new HttpClient(insecureHandler);
+                    client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+
+                    HttpContent httpContent = new StringContent(content, Encoding.UTF8);
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    HttpResponseMessage response = await client.PostAsync("api/shoppingList", httpContent);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        success = true;
+                    }
+                    else
+                    {
+                        success = false;
+                    }
+                }
+
+                if (success == true)
+                {
+                    selectedProductList.Clear();
+                    selectedList.ItemsSource = null;
+                    selectedList.ItemsSource = selectedProductList;
+                    await DisplayAlert("Success", "All selected items have been added to the shopping list", "Ok");
+                }
+                else
+                {
+                    await DisplayAlert("Ups", "Something went wrong while addint the items", "Ok");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("error", ex.Message, "Ok");
+            }
         }
     }
 }

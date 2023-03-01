@@ -19,6 +19,13 @@ namespace ShoppingList
         {
             InitializeComponent();
 
+            
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
             LoadDataFromRestApi();
         }
 
