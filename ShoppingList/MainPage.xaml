@@ -46,7 +46,7 @@
                 
                 <Grid>
                     <Button Grid.Column="0" x:Name="DeleteWholeList" Text="Delete list" Clicked="DeleteWholeList_Clicked"/>
-                    <Button Grid.Column="1" x:Name="EditList" Text="Edit List"/>
+                    <Button Grid.Column="1" x:Name="EditList" Text="Edit List" Clicked="EditList_Clicked"/>
                 </Grid>
                 
             </StackLayout>

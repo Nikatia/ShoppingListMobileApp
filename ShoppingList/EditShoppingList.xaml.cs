@@ -1,27 +1,26 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ShoppingList.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 using static Xamarin.Forms.Internals.Profile;
-using ShoppingList.Models;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Diagnostics;
 
 namespace ShoppingList
 {
-    public partial class MainPage : CarouselPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class EditShoppingList : ContentPage
     {
-        public MainPage()
+        public EditShoppingList()
         {
             InitializeComponent();
-
-            
         }
 
         protected override void OnAppearing()
@@ -47,7 +46,7 @@ namespace ShoppingList
         {
             try
             {
-                
+
 #if DEBUG
                 HttpClientHandler insecureHandler = GetInsecureHandler();
                 HttpClient client = new HttpClient(insecureHandler);
@@ -69,61 +68,56 @@ namespace ShoppingList
             }
         }
 
-        async void AddItem_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new AddingItems());
-        }
-
-        private async void PurchasedButton_Clicked(object sender, EventArgs e)
+        async void EditButton_Clicked(object sender, EventArgs e)
         {
             var btn = (Button)sender;
             var item = (ListedItem)btn.BindingContext;
-            int listedItem = item.ListedItemId;
+            int listedId = item.ListedItemId;
+            int product = item.ProductId;
+            int amount = item.Amount;
 
             HttpClientHandler insecureHandler = GetInsecureHandler();
             HttpClient client = new HttpClient(insecureHandler);
             client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-            HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/purchased/" + listedItem);
 
-            if (response.IsSuccessStatusCode)
+            if (amount != 0)
             {
-                shoppingList.ItemsSource = null;
-                LoadDataFromRestApi();
-                await DisplayAlert("Purchsed", item.ProductName + " has been purchased", "Ok");
+                ListedItem listedItem = new ListedItem() { ListedItemId = listedId, ProductId = product, Amount = amount };
+                var content = JsonConvert.SerializeObject(item);
+
+                HttpContent httpContent = new StringContent(content, Encoding.UTF8);
+                httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                HttpResponseMessage response = await client.PutAsync("api/shoppingList/edit/" + listedId, httpContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await DisplayAlert("Update", "Selected item on the shopping list has been updated", "Ok");
+                }
+                else
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    string ss = data;
+                    await DisplayAlert("Error", ss, "Ok");
+                }
             }
-            else
+            else if (amount == 0)
             {
-                var data = await response.Content.ReadAsStringAsync();
-                string ss = data;
-                await DisplayAlert("Error", ss , "Ok");
+                HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/delete/" + listedId);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    shoppingList.ItemsSource = null;
+                    LoadDataFromRestApi();
+                    await DisplayAlert("Delete", "Selected item has been removed from the shopping list.", "Ok");
+                }
+                else
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    string ss = data;
+                    await DisplayAlert("Error", ss, "Ok");
+                }
             }
-
-        }
-
-        private async void DeleteWholeList_Clicked(object sender, EventArgs e)
-        {
-            HttpClientHandler insecureHandler = GetInsecureHandler();
-            HttpClient client = new HttpClient(insecureHandler);
-            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-            HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/");
-
-            if (response.IsSuccessStatusCode)
-            {
-                shoppingList.ItemsSource = null;
-                LoadDataFromRestApi();
-                await DisplayAlert("Deleted", "All items in shopping list have been deleted", "Ok");
-            }
-            else
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                string ss = data;
-                await DisplayAlert("Error", ss, "Ok");
-            }
-        }
-
-        async void EditList_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new EditShoppingList());
+            
         }
     }
 }

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.EditShoppingList"
+             StyleClass="dark">
+    <ContentPage.Content>
+        <StackLayout>
+            <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
+                <Label x:Name="UpperLabel" Text="Edit Shopping List" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
+            </Frame>
+            <StackLayout HeightRequest="530">
+                <ListView x:Name="shoppingList"
+                      SeparatorVisibility="None"
+                      VerticalScrollBarVisibility="Never"
+                      HorizontalScrollBarVisibility="Never">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                    <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                    <Entry  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                    <Button Grid.Column="3" x:Name="EditButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center" Text="Edit" Clicked="EditButton_Clicked" />
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
