@@ -9,7 +9,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
                 <Label x:Name="UpperLabel" Text="Add Item" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
             </Frame>
@@ -17,59 +17,62 @@
             <Picker x:Name="pickerCategory" Title="Select a category" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
 
             <Label x:Name="WhatCategory2" IsVisible="false" Text="{Binding SelectedCategory.CategoryId}"/>
-            <!--<Picker x:Name="pickerProduct" IsVisible="false" Title="Select items" ItemDisplayBinding="{Binding ProductName}" SelectedItem="{Binding SelectedProduct}" /> -->
-            <ListView x:Name="productList"
-                      SeparatorVisibility="None"
-                      VerticalScrollBarVisibility="Never"
-                      HorizontalScrollBarVisibility="Never"
-                      IsVisible="false">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                <Entry x:Name="Amount" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="33" WidthRequest="33" Padding="0,0,0,0" FontSize="20" Grid.Column="3" Clicked="Button_Clicked"></Button>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <ListView x:Name="selectedList"
+            <StackLayout HeightRequest="390">
+                <ListView x:Name="productList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
                       HorizontalScrollBarVisibility="Never"
                       IsVisible="true">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                    <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                    <Entry x:Name="Amount" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                    <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="33" WidthRequest="33" Padding="0,0,0,0" FontSize="20" Grid.Column="3" Clicked="Button_Clicked"></Button>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+
+            <Frame Padding="10,10,10,10" Margin="0,0,0,0">
+                <CollectionView x:Name="selectedList"
+                            HeightRequest="120">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                        Span="3"
+                        VerticalItemSpacing="3"
+                        HorizontalItemSpacing="3" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate >
+                            <Grid Padding="0,0,0,0" Margin="0,0,0,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="7*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-
-                                <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                <Label x:Name="Amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                <Label Grid.Column="0" 
+                               Text="{Binding ProductName}" 
+                               FontAttributes="Bold" />
+                                <Label Grid.Column="1" 
+                               Text="{Binding Amount}" HorizontalTextAlignment="Start"/>
                             </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Frame>
+            <Button x:Name="AddItems" Clicked="AddItems_Clicked" Text="Add selected items to the shopping list"/>
 
-            <Button x:Name="AddItems" Clicked="AddItems_Clicked"  Text="Add selected items to the shopping list"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

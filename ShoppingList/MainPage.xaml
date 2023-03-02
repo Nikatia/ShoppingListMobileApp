@@ -11,36 +11,44 @@
     <ContentPage StyleClass="dark">
         <ScrollView>
             <StackLayout>
+                
                 <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
                     <Label x:Name="UpperLabel" Text="Shopping List" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
                 </Frame>
-                <Button x:Name="AddItem" Clicked="AddItem_Clicked"  Text="Add new item to the list"></Button>
-
-                <ListView x:Name="shoppingList"
-                      ItemTapped="shoppingList_ItemTapped"
+                
+                <Button x:Name="AddItem" Clicked="AddItem_Clicked"  Text="Add new items to the list"></Button>
+                <StackLayout HeightRequest="530">
+                    <ListView x:Name="shoppingList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
                       HorizontalScrollBarVisibility="Never">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="4*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                        <ColumnDefinition Width="*"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                    <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                    <Label Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                    <CheckBox Grid.Column="3" IsChecked="{Binding IsChecked}" VerticalOptions="Center" HorizontalOptions="EndAndExpand" Color="#bb86fc"/>
-                                </Grid>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                                        <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                        <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                        <Label  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                        <Button Grid.Column="3" x:Name="PurchasedButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center" Text="Purchased" Clicked="PurchasedButton_Clicked" />
+                                    </Grid>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackLayout>
+                
+                <Grid>
+                    <Button Grid.Column="0" x:Name="DeleteWholeList" Text="Delete list" Clicked="DeleteWholeList_Clicked"/>
+                    <Button Grid.Column="1" x:Name="EditList" Text="Edit List"/>
+                </Grid>
+                
             </StackLayout>
         </ScrollView>
     </ContentPage>

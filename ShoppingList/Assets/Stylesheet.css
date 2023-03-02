@@ -10,3 +10,12 @@ Button {
     background-color: #bb86fc;
     color: #1e1e1e;
 }
+
+.sLButton {
+    background-color: #bb86fc;
+    color: white;
+    font-size: 10;
+    padding: 0 0 0 0;
+    height: 33;
+    font-weight: bold;
+}

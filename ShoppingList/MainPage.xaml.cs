@@ -10,6 +10,8 @@ using Xamarin.Forms;
 using static Xamarin.Forms.Internals.Profile;
 using ShoppingList.Models;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Diagnostics;
 
 namespace ShoppingList
 {
@@ -69,53 +71,56 @@ namespace ShoppingList
             }
         }
 
-        private void shoppingList_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-
-        }
-
         async void AddItem_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddingItems());
         }
 
+        private async void PurchasedButton_Clicked(object sender, EventArgs e)
+        {
+            var btn = (Button)sender;
+            var item = (ListedItem)btn.BindingContext;
+            int listedItem = item.ListedItemId;
 
+            HttpClientHandler insecureHandler = GetInsecureHandler();
+            HttpClient client = new HttpClient(insecureHandler);
+            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+            HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/purchased/" + listedItem);
 
+            if (response.IsSuccessStatusCode)
+            {
+                shoppingList.ItemsSource = null;
+                LoadDataFromRestApi();
+                await DisplayAlert("Purchsed", item.ProductName + " has been purchased", "Ok");
+            }
+            else
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                string ss = data;
+                await DisplayAlert("Error", ss , "Ok");
+            }
 
+        }
 
+        private async void DeleteWholeList_Clicked(object sender, EventArgs e)
+        {
+            HttpClientHandler insecureHandler = GetInsecureHandler();
+            HttpClient client = new HttpClient(insecureHandler);
+            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+            HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/");
 
-        //        try
-        //            {
-        //                #if DEBUG
-        //                HttpClientHandler insecureHandler = GetInsecureHandler();
-        //        HttpClient client = new HttpClient(insecureHandler);
-        //#else
-        //                        HttpClient client = new HttpClient();
-        //#endif
-
-        //        client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-        //        string json = await client.GetStringAsync("api/shoppingList");
-
-        //        string jsonData = @"{""ProductID"" : ""myusername"", ""Amount"" : ""mypassword""}";
-
-        //        IEnumerable<ListedItem> item = JsonConvert.DeserializeObject<ListedItem[]>(json);
-        //        ObservableCollection<ListedItem> dataa = new ObservableCollection<ListedItem>(item);
-
-        //        shoppingList.ItemsSource = dataa;
-
-
-        //                string jsonData = @"{""username"" : ""myusername"", ""password"" : ""mypassword""}"
-
-        //var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //        HttpResponseMessage response = await client.PostAsync("/foo/login", content);
-
-        //        // this result string should be something like: "{"token":"rgh2ghgdsfds"}"
-        //        var result = await response.Content.ReadAsStringAsync();
-
-        //    }
-        //            catch (Exception ex)
-        //            {
-        //                await DisplayAlert("Error", ex.Message.ToString(), "Ok");
-        //}
+            if (response.IsSuccessStatusCode)
+            {
+                shoppingList.ItemsSource = null;
+                LoadDataFromRestApi();
+                await DisplayAlert("Deleted", "All items in shopping list have been deleted", "Ok");
+            }
+            else
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                string ss = data;
+                await DisplayAlert("Error", ss, "Ok");
+            }
+        }
     }
 }
