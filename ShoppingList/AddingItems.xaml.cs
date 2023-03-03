@@ -89,11 +89,34 @@ namespace ShoppingList
             }
         }
 
+        async void LoadCategoryNameFromRestApi(int catId)
+        {
+            try
+            {
+
+#if DEBUG
+                HttpClientHandler insecureHandler = GetInsecureHandler();
+                HttpClient client = new HttpClient(insecureHandler);
+#else
+                        HttpClient client = new HttpClient();
+#endif
+
+                client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+                string categoryName = await client.GetStringAsync("api/category/" + catId);
+                WhatCategory.Text = categoryName;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message.ToString(), "Ok");
+            }
+        }
+
         private void pickerCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            productList.IsVisible = true;
+            newProduct.IsVisible = true;
             int catId = Convert.ToInt32(WhatCategory2.Text);
             LoadProductsFromRestApi(catId);
+            LoadCategoryNameFromRestApi(catId);
         }
 
         private void Button_Clicked(object sender, EventArgs e)
@@ -149,9 +172,9 @@ namespace ShoppingList
 
         private async void AddItems_Clicked(object sender, EventArgs e)
         {
-            bool success = false;
             try
             {
+                bool success = false;
                 foreach (var i in selectedProductList)
                 {
                     int product = i.ProductId;
@@ -161,13 +184,12 @@ namespace ShoppingList
                     HttpClientHandler insecureHandler = GetInsecureHandler();
                     HttpClient client = new HttpClient(insecureHandler);
                     client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-                    HttpResponseMessage checkResponse = await client.GetAsync("api/shoppingList/check/" + i.ProductId);
+                    string checkResponse = await client.GetStringAsync("api/shoppingList/check/" + i.ProductId);
 
-                    if (checkResponse.IsSuccessStatusCode)
+                    if (checkResponse != "Does not exist")
                     {
                         //checking product's amount on the existing entry
-                        string jsonResponse = await checkResponse.Content.ReadAsStringAsync();
-                        IEnumerable<ListedItem> oldItem = JsonConvert.DeserializeObject<ListedItem[]>(jsonResponse);
+                        IEnumerable<ListedItem> oldItem = JsonConvert.DeserializeObject<ListedItem[]>(checkResponse);
                         ObservableCollection<ListedItem> oldData = new ObservableCollection<ListedItem>(oldItem);
                         int oldAmount = oldData.FirstOrDefault().Amount;
                         int listedId = oldData.FirstOrDefault().ListedItemId;
@@ -192,7 +214,7 @@ namespace ShoppingList
                     }
                     else
                     {
-                        
+
                         ListedItem item = new ListedItem() { ProductId = product, Amount = amount };
                         var content = JsonConvert.SerializeObject(item);
 
@@ -215,20 +237,17 @@ namespace ShoppingList
                 if (success == true)
                 {
                     selectedProductList.Clear();
-                    selectedList.ItemsSource = null;
-                    selectedList.ItemsSource = selectedProductList;
-                    pickerCategory.ItemsSource = null;
-                    pickerCategory.ItemsSource = await GetCategoriesAsync();
                     await DisplayAlert("Success", "All selected items have been added to the shopping list", "Ok");
+                    await Navigation.PushAsync(new MainPage());
                 }
                 else
                 {
-                    await DisplayAlert("Ups", "Something went wrong while addint the items", "Ok");
+                    await DisplayAlert("Ups", "Something went wrong while adding the items", "Ok");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("error", ex.Message, "Ok");
+                await DisplayAlert("Error", ex.Message, "Ok");
             }
         }
 
@@ -248,6 +267,51 @@ namespace ShoppingList
             {
                 entry.Text = "0";
             }
+        }
+
+        private async void NewProduct_Clicked(object sender, EventArgs e)
+        {
+            string categoryName = WhatCategory.Text;
+
+            if (categoryName == "")
+            {
+                await DisplayAlert("Error", "Please, select category from dropdown list first", "Ok");
+              
+            }
+            else
+            {
+                int categoryId = Convert.ToInt32(WhatCategory2.Text);
+                string productName = await DisplayPromptAsync("New " + categoryName + " Product", "What is new Product's Name?");
+
+                HttpClientHandler insecureHandler = GetInsecureHandler();
+                HttpClient client = new HttpClient(insecureHandler);
+                client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+                HttpResponseMessage response = await client.GetAsync("api/products/productExists/" + productName);
+
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string oldCategoryId = await client.GetStringAsync("api/products/productExists/" + productName);
+
+                    string oldCategoryName = await client.GetStringAsync("api/category/" + oldCategoryId);
+
+                    await DisplayAlert("Product Exists", "Product with a name, which you are trying to create already exists. It is located in " + oldCategoryName + " Category.", "Ok");
+                }
+                else if (productName == null) { }
+                else
+                {
+                    Product product = new Product() { CategoryId = categoryId, ProductName = productName };
+                    var content = JsonConvert.SerializeObject(product);
+
+
+                    HttpContent httpContent = new StringContent(content, Encoding.UTF8);
+                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    HttpResponseMessage newProductResponse = await client.PostAsync("api/products", httpContent);
+                    LoadProductsFromRestApi(categoryId);
+
+                    await DisplayAlert("Product Added", "Product has been added", "Ok");
+                }
+            }            
         }
     }
 }

@@ -16,8 +16,9 @@
             </Frame>
 
             <Picker x:Name="pickerCategory" Title="Select a category" TitleColor="#1e1e1e" BackgroundColor="#bb86fc" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
-
+            <Label x:Name="WhatCategory" IsVisible="false" Text=""/>
             <Label x:Name="WhatCategory2" IsVisible="false" Text="{Binding SelectedCategory.CategoryId}"/>
+            <Button x:Name="newProduct" Text="Add new Product" IsVisible="false" BackgroundColor="#1e1e1e" TextColor="#bb86fc" Clicked="NewProduct_Clicked"></Button>
             <StackLayout HeightRequest="390">
                 <ListView x:Name="productList"
                       SeparatorVisibility="None"
@@ -45,7 +46,6 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
-
             <Frame Padding="10,10,10,10" Margin="0,0,0,0" BackgroundColor="#1e1e1e">
                 <CollectionView x:Name="selectedList"
                                 HeightRequest="120"
