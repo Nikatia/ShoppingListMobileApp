@@ -3,12 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShoppingList.EditShoppingList"
              StyleClass="dark">
+
+    <ContentPage.Resources>
+        <StyleSheet Source="/Assets/Stylesheet.css" />
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout>
-            <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
-                <Label x:Name="UpperLabel" Text="Edit Shopping List" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
+            <Frame BackgroundColor="#121212" BorderColor="Transparent" Padding="24" CornerRadius="0">
+                <Label x:Name="UpperLabel" Text="Edit Shopping List" HorizontalTextAlignment="Center" TextColor="#dedede" FontSize="36"/>
             </Frame>
-            <StackLayout HeightRequest="530">
+            <StackLayout HeightRequest="800" BackgroundColor="#1e1e1e" Margin="10,0,10,10" Padding="5,5,5,5">
                 <ListView x:Name="shoppingList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
@@ -26,8 +31,8 @@
 
                                     <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
                                     <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                    <Entry  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                    <Button Grid.Column="3" x:Name="EditButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center" Text="Edit" Clicked="EditButton_Clicked" />
+                                    <Entry  Grid.Column="2" Text="{Binding Amount}" Unfocused="Entry_Unfocused" FontSize="14" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                    <Button Grid.Column="3" Text="&#x2713;" x:Name="EditButton" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Clicked="EditButton_Clicked"/>
                                 </Grid>
                             </ViewCell>
                         </DataTemplate>

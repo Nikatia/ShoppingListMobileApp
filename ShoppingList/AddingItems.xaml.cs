@@ -24,7 +24,6 @@ namespace ShoppingList
         {
             InitializeComponent();
             BindingContext = new AddingItemsViewModel();
-
         }
 
         private HttpClientHandler GetInsecureHandler()
@@ -37,34 +36,6 @@ namespace ShoppingList
                 return errors == System.Net.Security.SslPolicyErrors.None;
             };
             return handler;
-        }
-
-        async void LoadCategoriesFromRestApi()
-        {
-            try
-            {
-
-#if DEBUG
-                HttpClientHandler insecureHandler = GetInsecureHandler();
-                HttpClient client = new HttpClient(insecureHandler);
-#else
-                        HttpClient client = new HttpClient();
-#endif
-
-                client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-                string json = await client.GetStringAsync("api/category");
-
-                IEnumerable<ListedItem> category = JsonConvert.DeserializeObject<ListedItem[]>(json);
-                ObservableCollection<ListedItem> data = new ObservableCollection<ListedItem>(category);
-
-                pickerCategory.ItemsSource = data;
-
-
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", ex.Message.ToString(), "Ok");
-            }
         }
 
         protected override async void OnAppearing()
@@ -111,8 +82,6 @@ namespace ShoppingList
                 ObservableCollection<ListedItem> dataa = new ObservableCollection<ListedItem>(item);
 
                 productList.ItemsSource = dataa;
-
-
             }
             catch (Exception ex)
             {
@@ -187,24 +156,59 @@ namespace ShoppingList
                 {
                     int product = i.ProductId;
                     int amount = i.Amount;
-                    ListedItem item = new ListedItem() { ProductId = product, Amount = amount };
-                    var content = JsonConvert.SerializeObject(item);
 
+                    //checking if product is already on the shopping list
                     HttpClientHandler insecureHandler = GetInsecureHandler();
                     HttpClient client = new HttpClient(insecureHandler);
                     client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+                    HttpResponseMessage checkResponse = await client.GetAsync("api/shoppingList/check/" + i.ProductId);
 
-                    HttpContent httpContent = new StringContent(content, Encoding.UTF8);
-                    httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    HttpResponseMessage response = await client.PostAsync("api/shoppingList", httpContent);
-
-                    if (response.IsSuccessStatusCode)
+                    if (checkResponse.IsSuccessStatusCode)
                     {
-                        success = true;
+                        //checking product's amount on the existing entry
+                        string jsonResponse = await checkResponse.Content.ReadAsStringAsync();
+                        IEnumerable<ListedItem> oldItem = JsonConvert.DeserializeObject<ListedItem[]>(jsonResponse);
+                        ObservableCollection<ListedItem> oldData = new ObservableCollection<ListedItem>(oldItem);
+                        int oldAmount = oldData.FirstOrDefault().Amount;
+                        int listedId = oldData.FirstOrDefault().ListedItemId;
+
+                        //updating the amount
+                        int newAmount = oldAmount + amount;
+
+                        ListedItem listedItem = new ListedItem() { ListedItemId = listedId, ProductId = product, Amount = newAmount };
+                        var content = JsonConvert.SerializeObject(listedItem);
+                        HttpContent httpContent = new StringContent(content, Encoding.UTF8);
+                        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        HttpResponseMessage response = await client.PutAsync("api/shoppingList/edit/" + listedId, httpContent);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            success = true;
+                        }
+                        else
+                        {
+                            success = false;
+                        }
                     }
                     else
                     {
-                        success = false;
+                        
+                        ListedItem item = new ListedItem() { ProductId = product, Amount = amount };
+                        var content = JsonConvert.SerializeObject(item);
+
+
+                        HttpContent httpContent = new StringContent(content, Encoding.UTF8);
+                        httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        HttpResponseMessage response = await client.PostAsync("api/shoppingList", httpContent);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            success = true;
+                        }
+                        else
+                        {
+                            success = false;
+                        }
                     }
                 }
 
@@ -213,6 +217,8 @@ namespace ShoppingList
                     selectedProductList.Clear();
                     selectedList.ItemsSource = null;
                     selectedList.ItemsSource = selectedProductList;
+                    pickerCategory.ItemsSource = null;
+                    pickerCategory.ItemsSource = await GetCategoriesAsync();
                     await DisplayAlert("Success", "All selected items have been added to the shopping list", "Ok");
                 }
                 else
@@ -223,6 +229,24 @@ namespace ShoppingList
             catch (Exception ex)
             {
                 await DisplayAlert("error", ex.Message, "Ok");
+            }
+        }
+
+        private void Amount_Focused(object sender, FocusEventArgs e)
+        {
+            var entry = (Entry)sender;
+            if (entry.Text == "0")
+            {
+                entry.Text = "";
+            }
+        }
+
+        private void Amount_Unfocused(object sender, FocusEventArgs e)
+        {
+            var entry = (Entry)sender;
+            if (entry.Text == "")
+            {
+                entry.Text = "0";
             }
         }
     }

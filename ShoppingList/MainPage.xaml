@@ -1,55 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<CarouselPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShoppingList.MainPage"
-             Title="Shopping List">
+             Title="Shopping List"
+             StyleClass="dark">
 
-    <CarouselPage.Resources>
+    <ContentPage.Resources>
         <StyleSheet Source="/Assets/Stylesheet.css" />
-    </CarouselPage.Resources>
+    </ContentPage.Resources>
 
-    <ContentPage StyleClass="dark">
-        <ScrollView>
-            <StackLayout>
-                
-                <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
-                    <Label x:Name="UpperLabel" Text="Shopping List" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
-                </Frame>
-                
-                <Button x:Name="AddItem" Clicked="AddItem_Clicked"  Text="Add new items to the list"></Button>
-                <StackLayout HeightRequest="530">
-                    <ListView x:Name="shoppingList"
+    <StackLayout>
+
+        <Frame BackgroundColor="#121212" Padding="24" CornerRadius="0">
+            <Label x:Name="UpperLabel" Text="Shopping List" HorizontalTextAlignment="Center" TextColor="#dedede" FontSize="36"/>
+        </Frame>
+
+        <Button x:Name="AddItem" Clicked="AddItem_Clicked"  Text="Add new items to the list"></Button>
+        <StackLayout HeightRequest="530" BackgroundColor="#1e1e1e" Margin="10,10,10,10" Padding="5,5,5,5">
+            <ListView x:Name="shoppingList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
                       HorizontalScrollBarVisibility="Never">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="3*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Margin="15,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                                        <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                        <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                        <Label  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                        <Button Grid.Column="3" x:Name="PurchasedButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center" Text="Purchased" Clicked="PurchasedButton_Clicked" />
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackLayout>
-                
-                <Grid>
-                    <Button Grid.Column="0" x:Name="DeleteWholeList" Text="Delete list" Clicked="DeleteWholeList_Clicked"/>
-                    <Button Grid.Column="1" x:Name="EditList" Text="Edit List" Clicked="EditList_Clicked"/>
-                </Grid>
-                
-            </StackLayout>
-        </ScrollView>
-    </ContentPage>
-</CarouselPage>
+                                <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
+                                <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                <Label  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
+                                <Button Grid.Column="3" x:Name="PurchasedButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center"  HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Text="&#x2713;" TextColor="White" Clicked="PurchasedButton_Clicked" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+
+        <Grid>
+            <Button Grid.Column="0" x:Name="DeleteWholeList" Text="Delete list" Clicked="DeleteWholeList_Clicked"/>
+            <Button Grid.Column="1" x:Name="EditList" Text="Edit List" Clicked="EditList_Clicked"/>
+        </Grid>
+
+    </StackLayout>
+</ContentPage>

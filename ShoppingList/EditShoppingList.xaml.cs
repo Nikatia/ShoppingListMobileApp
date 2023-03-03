@@ -119,5 +119,14 @@ namespace ShoppingList
             }
             
         }
+
+        private void Entry_Unfocused(object sender, FocusEventArgs e)
+        {
+            var entry = (Entry)sender;
+            if (entry.Text == "")
+            {
+                entry.Text = "0";
+            }
+        }
     }
 }

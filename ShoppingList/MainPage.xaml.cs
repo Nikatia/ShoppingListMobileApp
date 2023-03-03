@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace ShoppingList
 {
-    public partial class MainPage : CarouselPage
+    public partial class MainPage : ContentPage
     {
         public MainPage()
         {

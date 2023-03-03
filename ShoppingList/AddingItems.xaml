@@ -11,11 +11,11 @@
 
     <ContentPage.Content>
         <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-            <Frame BackgroundColor="#1e1e1e" Padding="24" CornerRadius="0">
-                <Label x:Name="UpperLabel" Text="Add Item" HorizontalTextAlignment="Center" TextColor="#c6c6c6" FontSize="36"/>
+            <Frame BackgroundColor="#121212" Padding="24" CornerRadius="0">
+                <Label x:Name="UpperLabel" Text="Add Item" HorizontalTextAlignment="Center" TextColor="#dedede" FontSize="36"/>
             </Frame>
 
-            <Picker x:Name="pickerCategory" Title="Select a category" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
+            <Picker x:Name="pickerCategory" Title="Select a category" TitleColor="#1e1e1e" BackgroundColor="#bb86fc" ItemDisplayBinding="{Binding CategoryName}" SelectedItem="{Binding SelectedCategory}" SelectedIndexChanged="pickerCategory_SelectedIndexChanged"/>
 
             <Label x:Name="WhatCategory2" IsVisible="false" Text="{Binding SelectedCategory.CategoryId}"/>
             <StackLayout HeightRequest="390">
@@ -37,8 +37,8 @@
 
                                     <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
                                     <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
-                                    <Entry x:Name="Amount" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                    <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="33" WidthRequest="33" Padding="0,0,0,0" FontSize="20" Grid.Column="3" Clicked="Button_Clicked"></Button>
+                                    <Entry x:Name="Amount" Focused="Amount_Focused" Unfocused="Amount_Unfocused" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585" FontSize="14"/>
+                                    <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Grid.Column="3" Clicked="Button_Clicked"/>
                                 </Grid>
                             </ViewCell>
                         </DataTemplate>
@@ -46,9 +46,10 @@
                 </ListView>
             </StackLayout>
 
-            <Frame Padding="10,10,10,10" Margin="0,0,0,0">
+            <Frame Padding="10,10,10,10" Margin="0,0,0,0" BackgroundColor="#1e1e1e">
                 <CollectionView x:Name="selectedList"
-                            HeightRequest="120">
+                                HeightRequest="120"
+                                BackgroundColor="#1e1e1e">
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout Orientation="Vertical"
                         Span="3"
@@ -64,9 +65,10 @@
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" 
                                Text="{Binding ProductName}" 
-                               FontAttributes="Bold" />
+                               FontAttributes="Bold" 
+                                       TextColor="#c6c6c6"/>
                                 <Label Grid.Column="1" 
-                               Text="{Binding Amount}" HorizontalTextAlignment="Start"/>
+                               Text="{Binding Amount}" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

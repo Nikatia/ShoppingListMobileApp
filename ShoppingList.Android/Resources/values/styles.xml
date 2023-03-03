@@ -14,5 +14,11 @@
     <!-- colorAccent is used as the default value for colorControlActivated
          which is used to tint widgets -->
     <!--<item name="colorAccent">#FF4081</item>-->
+	  <item name="colorAccent">@color/colorAccent</item>  
+	  <item name="colorControlNormal">#c6c6c6</item>
+	  <item name="android:colorPressedHighlight">@color/colorPrimary</item>
+	  <item name="android:colorFocusedHighlight">@color/colorPrimary</item>
+	  <item name="android:colorActivatedHighlight">@color/colorPrimary</item>
+	  <item name="android:activatedBackgroundIndicator">@color/colorPrimary</item>
   </style>
 </resources>
