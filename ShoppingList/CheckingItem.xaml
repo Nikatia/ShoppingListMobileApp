@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingList.CheckingItem"
+             StyleClass="dark">
+
+    <ContentPage.Resources>
+        <StyleSheet Source="/Assets/Stylesheet.css" />
+    </ContentPage.Resources>
+    
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Frame BackgroundColor="#121212" Padding="24" CornerRadius="0">
+                <Label x:Name="upperLabel" Text="" HorizontalTextAlignment="Center" TextColor="#dedede" FontSize="36"/>
+            </Frame>
+            <Grid Margin="10,10,10,10" HeightRequest="500">
+                <Image x:Name="productPicture" Aspect="AspectFit" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Source=""></Image>
+                <Label x:Name="noImageLabel" Text="No image loaded for this product" IsVisible="False" TextColor="#c6c6c6" VerticalOptions="Center" HorizontalOptions="Center"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

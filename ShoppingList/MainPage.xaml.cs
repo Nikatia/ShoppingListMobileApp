@@ -20,8 +20,6 @@ namespace ShoppingList
         public MainPage()
         {
             InitializeComponent();
-
-            
         }
 
         protected override void OnAppearing()
@@ -31,31 +29,13 @@ namespace ShoppingList
             LoadDataFromRestApi();
         }
 
-        private HttpClientHandler GetInsecureHandler()
-        {
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-            {
-                if (cert.Issuer.Equals("CN=localhost"))
-                    return true;
-                return errors == System.Net.Security.SslPolicyErrors.None;
-            };
-            return handler;
-        }
-
+        //Loads Shopping List Table from database through API and displays in shoppingList ListView
         async void LoadDataFromRestApi()
         {
             try
             {
-                
-#if DEBUG
-                HttpClientHandler insecureHandler = GetInsecureHandler();
-                HttpClient client = new HttpClient(insecureHandler);
-#else
-                        HttpClient client = new HttpClient();
-#endif
-
-                client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("writeYourLinkHere.net");
                 string json = await client.GetStringAsync("api/shoppingList");
 
                 IEnumerable<ListedItem> item = JsonConvert.DeserializeObject<ListedItem[]>(json);
@@ -69,20 +49,21 @@ namespace ShoppingList
             }
         }
 
+        //Opens page, where adding new items to shopping list and adding new products to categories is possible
         async void AddItem_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new AddingItems());
         }
 
+        //Deletes item from Shopping list table and adds it to Purchased Table through API
         private async void PurchasedButton_Clicked(object sender, EventArgs e)
         {
             var btn = (Button)sender;
             var item = (ListedItem)btn.BindingContext;
             int listedItem = item.ListedItemId;
 
-            HttpClientHandler insecureHandler = GetInsecureHandler();
-            HttpClient client = new HttpClient(insecureHandler);
-            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("writeYourLinkHere.net");
             HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/purchased/" + listedItem);
 
             if (response.IsSuccessStatusCode)
@@ -100,30 +81,50 @@ namespace ShoppingList
 
         }
 
+        //Deletes all rows from Shopping list Table through API
         private async void DeleteWholeList_Clicked(object sender, EventArgs e)
         {
-            HttpClientHandler insecureHandler = GetInsecureHandler();
-            HttpClient client = new HttpClient(insecureHandler);
-            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
-            HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/");
+            bool answer = await DisplayAlert("Delete", "Delete whole shopping list? \r\n\r\nRemember, that it doesn't equal purchasing.", "Delete", "Cancel");
 
-            if (response.IsSuccessStatusCode)
+            if (answer == true)
             {
-                shoppingList.ItemsSource = null;
-                LoadDataFromRestApi();
-                await DisplayAlert("Deleted", "All items in shopping list have been deleted", "Ok");
-            }
-            else
-            {
-                var data = await response.Content.ReadAsStringAsync();
-                string ss = data;
-                await DisplayAlert("Error", ss, "Ok");
-            }
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("writeYourLinkHere.net");
+                HttpResponseMessage response = await client.DeleteAsync("api/shoppingList/");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    shoppingList.ItemsSource = null;
+                    LoadDataFromRestApi();
+                    await DisplayAlert("Deleted", "All items in shopping list have been deleted", "Ok");
+                }
+                else
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    string ss = data;
+                    await DisplayAlert("Error", ss, "Ok");
+                }
+            }            
         }
 
+        //Opens page, where editing shopping list is possible
         async void EditList_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new EditShoppingList());
+        }
+
+        //Opens page with product's picture
+        private async void shoppingList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            ListedItem item = (ListedItem)shoppingList.SelectedItem;
+            int id = item.ProductId;
+            await Navigation.PushAsync(new CheckingItem(id));
+        }
+
+        //Back button on Shopping list main page is disabled
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
     }
 }

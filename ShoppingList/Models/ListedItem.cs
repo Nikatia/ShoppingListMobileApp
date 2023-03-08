@@ -13,5 +13,7 @@ namespace ShoppingList.Models
         public string ProductName { get; set; }
 
         public int Amount { get; set; }
+
+        public string PictureLink { get; set; }
     }
 }

@@ -30,14 +30,14 @@
                             <ViewCell>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                    <Label Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                    <Label Grid.Column="1" Text="Amt: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
                                     <Entry x:Name="Amount" Focused="Amount_Focused" Unfocused="Amount_Unfocused" Placeholder="Enter amount" Text="{Binding Amount}" Grid.Column="2" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585" FontSize="14"/>
                                     <Button Text="&#x2713;" TextColor="White" VerticalOptions="Center" HorizontalOptions="Center" Margin="10,0,0,0" HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Grid.Column="3" Clicked="Button_Clicked"/>
                                 </Grid>

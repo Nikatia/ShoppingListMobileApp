@@ -20,22 +20,23 @@
             <ListView x:Name="shoppingList"
                       SeparatorVisibility="None"
                       VerticalScrollBarVisibility="Never"
-                      HorizontalScrollBarVisibility="Never">
+                      HorizontalScrollBarVisibility="Never"
+                      ItemSelected="shoppingList_ItemSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Grid Margin="15,0,0,0">
+                            <Grid Margin="15,0,15,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <Label  Grid.Column="0" Text="{Binding ProductName}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#c6c6c6"/>
-                                <Label  Grid.Column="1" Text="Amount: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
+                                <Label  Grid.Column="1" Text="Amt: "  VerticalOptions="Center" HorizontalTextAlignment="End"  TextColor="#858585"/>
                                 <Label  Grid.Column="2" Text="{Binding Amount}"  VerticalOptions="Center" HorizontalTextAlignment="Start" TextColor="#858585"/>
-                                <Button Grid.Column="3" x:Name="PurchasedButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="Center"  HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Text="&#x2713;" TextColor="White" Clicked="PurchasedButton_Clicked" />
+                                <Button Grid.Column="3" x:Name="PurchasedButton" StyleClass="sLButton" VerticalOptions="Center" HorizontalOptions="End"  HeightRequest="28" WidthRequest="28" Padding="0,0,0,0" FontSize="15" Text="&#x2713;" TextColor="White" Clicked="PurchasedButton_Clicked" />
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

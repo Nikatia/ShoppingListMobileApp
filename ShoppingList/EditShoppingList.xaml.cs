@@ -26,35 +26,16 @@ namespace ShoppingList
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
             LoadDataFromRestApi();
         }
 
-        private HttpClientHandler GetInsecureHandler()
-        {
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-            {
-                if (cert.Issuer.Equals("CN=localhost"))
-                    return true;
-                return errors == System.Net.Security.SslPolicyErrors.None;
-            };
-            return handler;
-        }
-
+        //Loads Shopping List Table from database through API and displays in shoppingList ListView
         async void LoadDataFromRestApi()
         {
             try
             {
-
-#if DEBUG
-                HttpClientHandler insecureHandler = GetInsecureHandler();
-                HttpClient client = new HttpClient(insecureHandler);
-#else
-                        HttpClient client = new HttpClient();
-#endif
-
-                client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new Uri("writeYourLinkHere.net");
                 string json = await client.GetStringAsync("api/shoppingList");
 
                 IEnumerable<ListedItem> item = JsonConvert.DeserializeObject<ListedItem[]>(json);
@@ -68,6 +49,7 @@ namespace ShoppingList
             }
         }
 
+        //Depending on entered item's amount: edits item's data row in Shopping list Table OR deleted item from Shopping list
         async void EditButton_Clicked(object sender, EventArgs e)
         {
             var btn = (Button)sender;
@@ -76,9 +58,8 @@ namespace ShoppingList
             int product = item.ProductId;
             int amount = item.Amount;
 
-            HttpClientHandler insecureHandler = GetInsecureHandler();
-            HttpClient client = new HttpClient(insecureHandler);
-            client.BaseAddress = new Uri("https://10.0.2.2:7103/");
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("writeYourLinkHere.net");
 
             if (amount != 0)
             {
@@ -120,6 +101,7 @@ namespace ShoppingList
             
         }
 
+        //If after editing amount entry box is empty, change it to 0
         private void Entry_Unfocused(object sender, FocusEventArgs e)
         {
             var entry = (Entry)sender;
